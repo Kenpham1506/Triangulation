@@ -24,6 +24,7 @@
 	</style>
 	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+	<script src="https://unpkg.com/leaflet-geometryutil"></script>
 </head>
 <body>
 	<h1>Ping-Based Triangulation</h1>
@@ -49,7 +50,11 @@
 		{ host: 'https://lg.level3.net', name: 'Level 3 LG', location: 'Various US', lat: 39.7392, lon: -104.9903 }
 	];
 
-	const map = L.map('map').setView([20, 0], 2);
+	const map = L.map('map', {
+		worldCopyJump: true,
+		maxBoundsViscosity: 0.8
+	}).setView([20, 0], 2);
+
 	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 		attribution: '© OpenStreetMap contributors'
 	}).addTo(map);
@@ -60,13 +65,18 @@
 		document.getElementById('results').appendChild(tr);
 	}
 
-	function drawCircle(lat, lon, latency) {
+	function drawRepeatingCircles(lat, lon, latency) {
 		const approxDistanceKm = latency * 0.2; // rough RTT to distance conversion (1ms ~ 0.2km)
-		L.circle([lat, lon], {
-			radius: approxDistanceKm * 1000,
-			color: 'red',
-			fillOpacity: 0.1
-		}).addTo(map);
+		const radius = approxDistanceKm * 1000;
+		const offsets = [-360, 0, 360];
+
+		offsets.forEach(offset => {
+			L.circle([lat, lon + offset], {
+				radius,
+				color: 'red',
+				fillOpacity: 0.1
+			}).addTo(map);
+		});
 	}
 
 	async function measureLatency(server) {
@@ -78,7 +88,7 @@
 		} finally {
 			const latency = performance.now() - start;
 			addRow(server.name, server.location, latency.toFixed(1));
-			drawCircle(server.lat, server.lon, latency);
+			drawRepeatingCircles(server.lat, server.lon, latency);
 		}
 	}
 
