@@ -38,14 +38,20 @@
 
 	<script>
 	const servers = [
-		{ host: 'https://ec2.us-east-1.amazonaws.com', name: 'AWS US East', location: 'Virginia, US', lat: 37.4316, lon: -78.6569 },
-		{ host: 'https://ec2.us-west-1.amazonaws.com', name: 'AWS US West', location: 'California, US', lat: 36.7783, lon: -119.4179 },
-		{ host: 'https://ec2.eu-central-1.amazonaws.com', name: 'AWS Europe Central', location: 'Frankfurt, Germany', lat: 50.1109, lon: 8.6821 },
-		{ host: 'https://ec2.eu-west-1.amazonaws.com', name: 'AWS Europe West', location: 'Dublin, Ireland', lat: 53.3498, lon: -6.2603 },
-		{ host: 'https://ec2.ap-southeast-1.amazonaws.com', name: 'AWS Asia SE 1', location: 'Singapore', lat: 1.3521, lon: 103.8198 },
-		{ host: 'https://ec2.ap-southeast-2.amazonaws.com', name: 'AWS Asia SE 2', location: 'Sydney, Australia', lat: -33.8688, lon: 151.2093 },
-		{ host: 'https://ec2.ap-northeast-1.amazonaws.com', name: 'AWS Asia NE 1', location: 'Tokyo, Japan', lat: 35.6895, lon: 139.6917 },
-		{ host: 'https://ec2.sa-east-1.amazonaws.com', name: 'AWS South America', location: 'São Paulo, Brazil', lat: -23.5505, lon: -46.6333 }
+		{ host: 'https://ec2.us-east-1.amazonaws.com', name: 'AWS US East (N. Virginia)', location: 'Virginia, US', lat: 37.4316, lon: -78.6569 },
+		{ host: 'https://ec2.us-east-2.amazonaws.com', name: 'AWS US East (Ohio)', location: 'Ohio, US', lat: 40.4173, lon: -82.9071 },
+		{ host: 'https://ec2.us-west-1.amazonaws.com', name: 'AWS US West (N. California)', location: 'California, US', lat: 37.7749, lon: -122.4194 },
+		{ host: 'https://ec2.us-west-2.amazonaws.com', name: 'AWS US West (Oregon)', location: 'Oregon, US', lat: 45.5231, lon: -122.6765 },
+		{ host: 'https://ec2.ca-central-1.amazonaws.com', name: 'AWS Canada (Central)', location: 'Toronto, Canada', lat: 43.6532, lon: -79.3832 },
+		{ host: 'https://ec2.eu-central-1.amazonaws.com', name: 'AWS Europe (Frankfurt)', location: 'Frankfurt, Germany', lat: 50.1109, lon: 8.6821 },
+		{ host: 'https://ec2.eu-west-1.amazonaws.com', name: 'AWS Europe (Ireland)', location: 'Dublin, Ireland', lat: 53.3498, lon: -6.2603 },
+		{ host: 'https://ec2.eu-west-2.amazonaws.com', name: 'AWS Europe (London)', location: 'London, UK', lat: 51.5074, lon: -0.1278 },
+		{ host: 'https://ec2.ap-northeast-1.amazonaws.com', name: 'AWS Asia Pacific (Tokyo)', location: 'Tokyo, Japan', lat: 35.6895, lon: 139.6917 },
+		{ host: 'https://ec2.ap-northeast-2.amazonaws.com', name: 'AWS Asia Pacific (Seoul)', location: 'Seoul, South Korea', lat: 37.5665, lon: 126.9780 },
+		{ host: 'https://ec2.ap-southeast-1.amazonaws.com', name: 'AWS Asia Pacific (Singapore)', location: 'Singapore', lat: 1.3521, lon: 103.8198 },
+		{ host: 'https://ec2.ap-southeast-2.amazonaws.com', name: 'AWS Asia Pacific (Sydney)', location: 'Sydney, Australia', lat: -33.8688, lon: 151.2093 },
+		{ host: 'https://ec2.sa-east-1.amazonaws.com', name: 'AWS South America (São Paulo)', location: 'São Paulo, Brazil', lat: -23.5505, lon: -46.6333 },
+		{ host: 'https://ec2.af-south-1.amazonaws.com', name: 'AWS Africa (Cape Town)', location: 'Cape Town, South Africa', lat: -33.9249, lon: 18.4241 }
 	];
 
 	const map = L.map('map', {
@@ -64,7 +70,8 @@
 	}
 
 	function drawRepeatingCircles(lat, lon, latency) {
-		const approxDistanceKm = latency * 0.2; // rough RTT to distance conversion (1ms ~ 0.2km)
+		// Bigger circle: 1ms RTT ~ 1km distance
+		const approxDistanceKm = latency * 1.0;
 		const radius = approxDistanceKm * 1000;
 		const offsets = [-360, 0, 360];
 
@@ -82,7 +89,7 @@
 		try {
 			await fetch(server.host, { mode: 'no-cors' });
 		} catch (e) {
-			// expected error in no-cors mode
+			// no-cors will throw, ignore
 		} finally {
 			const latency = performance.now() - start;
 			addRow(server.name, server.location, latency.toFixed(1));
