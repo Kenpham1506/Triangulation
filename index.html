@@ -71,8 +71,8 @@
 
 	function drawRepeatingCircles(lat, lon, latency) {
 		// Bigger circle: 1ms RTT ~ 1km distance
-		const approxDistanceKm = latency * 1.0;
-		const radius = approxDistanceKm * 2500;
+		const approxDistanceKm = latency * 0.5;
+		const radius = approxDistanceKm * 5000;
 		const offsets = [-360, 0, 360];
 
 		offsets.forEach(offset => {
