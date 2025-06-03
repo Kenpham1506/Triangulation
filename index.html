@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Ping-Based Triangulation</title>
+	<style>
+		body {
+			font-family: sans-serif;
+			padding: 2em;
+		}
+		table {
+			border-collapse: collapse;
+			width: 100%;
+			margin-top: 1em;
+		}
+		td, th {
+			border: 1px solid #ccc;
+			padding: 0.5em;
+		}
+		#map {
+			height: 500px;
+			margin-top: 2em;
+			border: 1px solid #ccc;
+		}
+	</style>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+	<h1>Ping-Based Triangulation</h1>
+	<p>Pinging known-location servers to estimate your approximate location based on latency.</p>
+
+	<table id="results">
+		<tr><th>Server</th><th>Location</th><th>Latency (ms)</th></tr>
+	</table>
+
+	<div id="map"></div>
+
+	<script>
+	const servers = [
+		{ host: 'https://time.apple.com', name: 'Apple NTP', location: 'California, US', lat: 37.3349, lon: -122.0090 },
+		{ host: 'https://time.windows.com', name: 'Microsoft NTP', location: 'New York, US', lat: 40.7128, lon: -74.0060 },
+		{ host: 'https://ntp.jst.mfeed.ad.jp', name: 'Japan NTP', location: 'Tokyo, Japan', lat: 35.6895, lon: 139.6917 },
+		{ host: 'https://ntp1.fau.de', name: 'FAU NTP', location: 'Frankfurt, Germany', lat: 50.1109, lon: 8.6821 },
+		{ host: 'https://ec2.us-east-1.amazonaws.com', name: 'AWS US East', location: 'Virginia, US', lat: 37.4316, lon: -78.6569 },
+		{ host: 'https://ec2.eu-central-1.amazonaws.com', name: 'AWS Europe Central', location: 'Frankfurt, Germany', lat: 50.1109, lon: 8.6821 },
+		{ host: 'https://ec2.ap-southeast-1.amazonaws.com', name: 'AWS Asia SE', location: 'Singapore', lat: 1.3521, lon: 103.8198 },
+		{ host: 'https://lg.he.net', name: 'Hurricane Electric LG', location: 'Fremont, US', lat: 37.5483, lon: -121.9886 },
+		{ host: 'https://lg.telia.net', name: 'Telia LG', location: 'Stockholm, Sweden', lat: 59.3293, lon: 18.0686 },
+		{ host: 'https://lg.level3.net', name: 'Level 3 LG', location: 'Various US', lat: 39.7392, lon: -104.9903 }
+	];
+
+	const map = L.map('map').setView([20, 0], 2);
+	L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		attribution: '© OpenStreetMap contributors'
+	}).addTo(map);
+
+	function addRow(name, location, latency) {
+		const tr = document.createElement('tr');
+		tr.innerHTML = `<td>${name}</td><td>${location}</td><td>${latency}</td>`;
+		document.getElementById('results').appendChild(tr);
+	}
+
+	function drawCircle(lat, lon, latency) {
+		const approxDistanceKm = latency * 0.2; // rough RTT to distance conversion (1ms ~ 0.2km)
+		L.circle([lat, lon], {
+			radius: approxDistanceKm * 1000,
+			color: 'red',
+			fillOpacity: 0.1
+		}).addTo(map);
+	}
+
+	async function measureLatency(server) {
+		const start = performance.now();
+		try {
+			await fetch(server.host, { mode: 'no-cors' });
+		} catch (e) {
+			// expected error in no-cors mode
+		} finally {
+			const latency = performance.now() - start;
+			addRow(server.name, server.location, latency.toFixed(1));
+			drawCircle(server.lat, server.lon, latency);
+		}
+	}
+
+	(async function () {
+		for (const server of servers) {
+			await measureLatency(server);
+		}
+	})();
+	</script>
+</body>
+</html>
