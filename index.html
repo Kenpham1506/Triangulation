@@ -38,16 +38,14 @@
 
 	<script>
 	const servers = [
-		{ host: 'https://time.apple.com', name: 'Apple NTP', location: 'California, US', lat: 37.3349, lon: -122.0090 },
-		{ host: 'https://time.windows.com', name: 'Microsoft NTP', location: 'New York, US', lat: 40.7128, lon: -74.0060 },
-		{ host: 'https://ntp.jst.mfeed.ad.jp', name: 'Japan NTP', location: 'Tokyo, Japan', lat: 35.6895, lon: 139.6917 },
-		{ host: 'https://ntp1.fau.de', name: 'FAU NTP', location: 'Frankfurt, Germany', lat: 50.1109, lon: 8.6821 },
 		{ host: 'https://ec2.us-east-1.amazonaws.com', name: 'AWS US East', location: 'Virginia, US', lat: 37.4316, lon: -78.6569 },
+		{ host: 'https://ec2.us-west-1.amazonaws.com', name: 'AWS US West', location: 'California, US', lat: 36.7783, lon: -119.4179 },
 		{ host: 'https://ec2.eu-central-1.amazonaws.com', name: 'AWS Europe Central', location: 'Frankfurt, Germany', lat: 50.1109, lon: 8.6821 },
-		{ host: 'https://ec2.ap-southeast-1.amazonaws.com', name: 'AWS Asia SE', location: 'Singapore', lat: 1.3521, lon: 103.8198 },
-		{ host: 'https://lg.he.net', name: 'Hurricane Electric LG', location: 'Fremont, US', lat: 37.5483, lon: -121.9886 },
-		{ host: 'https://lg.telia.net', name: 'Telia LG', location: 'Stockholm, Sweden', lat: 59.3293, lon: 18.0686 },
-		{ host: 'https://lg.level3.net', name: 'Level 3 LG', location: 'Various US', lat: 39.7392, lon: -104.9903 }
+		{ host: 'https://ec2.eu-west-1.amazonaws.com', name: 'AWS Europe West', location: 'Dublin, Ireland', lat: 53.3498, lon: -6.2603 },
+		{ host: 'https://ec2.ap-southeast-1.amazonaws.com', name: 'AWS Asia SE 1', location: 'Singapore', lat: 1.3521, lon: 103.8198 },
+		{ host: 'https://ec2.ap-southeast-2.amazonaws.com', name: 'AWS Asia SE 2', location: 'Sydney, Australia', lat: -33.8688, lon: 151.2093 },
+		{ host: 'https://ec2.ap-northeast-1.amazonaws.com', name: 'AWS Asia NE 1', location: 'Tokyo, Japan', lat: 35.6895, lon: 139.6917 },
+		{ host: 'https://ec2.sa-east-1.amazonaws.com', name: 'AWS South America', location: 'São Paulo, Brazil', lat: -23.5505, lon: -46.6333 }
 	];
 
 	const map = L.map('map', {
